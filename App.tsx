@@ -1,11 +1,15 @@
 import { SafeAreaView, StyleSheet } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
 import Home from './component/Home';
 
 export default function App() {
   return (
-    <SafeAreaView>
-      <Home />
-    </SafeAreaView>
+    <PaperProvider>
+      <SafeAreaView>
+        <Home />
+      </SafeAreaView>
+    </PaperProvider>
+
   );
 }
 
