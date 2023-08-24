@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Header from './header/Header';
 import Constants from "expo-constants";
 import { StatusBar } from 'expo-status-bar';
+import DataDisplay from './header/DataDisplay';
 
 const Home = () => {
     const [transactions, setTransactions] = useState([
@@ -20,6 +21,7 @@ const Home = () => {
             <View style={styles.header}>
                 <Header />
             </View>
+            <DataDisplay />
         </View>
     )
 }
