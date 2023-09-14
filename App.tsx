@@ -1,8 +1,8 @@
 import { SafeAreaView, StyleSheet } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import Home from './homeComponent/Home';
-import Navigation from './Navigation';
+import Home from './frontend/homeComponent/Home';
+import Navigation from './frontend/Navigation';
 
 export default function App() {
   return (
