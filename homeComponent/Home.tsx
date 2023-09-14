@@ -4,6 +4,7 @@ import Header from './header/Header';
 import Constants from "expo-constants";
 import { StatusBar } from 'expo-status-bar';
 import DataDisplay from './header/DataDisplay';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Home = () => {
     const [transactions, setTransactions] = useState([
@@ -16,20 +17,20 @@ const Home = () => {
     ])
       
     return (
-        <View>
+        <SafeAreaView>
             <StatusBar style="dark" />
             <View style={styles.header}>
                 <Header />
             </View>
             <DataDisplay />
-        </View>
+        </SafeAreaView>
     )
 }
 
 const BORDER_BOTTOM = {
-    borderBottomWidth: 1,
-    borderBottomColor: "#dbdbdb",
-  };
+  borderBottomWidth: 1,
+  borderBottomColor: "#dbdbdb",
+};
   
 const styles = StyleSheet.create({
     container: {

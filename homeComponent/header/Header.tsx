@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons'; 
 import { Modal, Portal, Text, Menu, Divider } from 'react-native-paper';
 
