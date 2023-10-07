@@ -73,20 +73,20 @@ const DataDisplay = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    backgroundColor: '#232B5D',
+      padding: 10,
+      backgroundColor: '#232B5D',
   },
   headerText: {
-    color: 'white', 
-    fontSize: 16, 
-    fontWeight: 'bold'
+      color: 'white', 
+      fontSize: 16, 
+      fontWeight: 'bold'
   },
   chartContainer: {
-    padding: 5,
-    marginTop: 10,
+      padding: 5,
+      marginTop: 10,
   },
   displayContainer: {
-    flexDirection: 'row',
+      flexDirection: 'row',
   },
   contentContainer: {
       backgroundColor: 'white', 
