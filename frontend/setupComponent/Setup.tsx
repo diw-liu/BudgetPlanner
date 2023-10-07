@@ -8,7 +8,7 @@ const Setting = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.pic}>
-        <Avatar.Image size={80} source={require('../assets/empty.png')} />
+        {/* <Avatar.Image size={80} source={require('../assets/empty.png')} /> */}
       </View>
       <View style={styles.name}>
         <Text>FirstName LastName</Text>

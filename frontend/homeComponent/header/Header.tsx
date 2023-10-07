@@ -1,41 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons'; 
 import { Modal, Portal, Text, Menu, Divider } from 'react-native-paper';
+import { API } from 'aws-amplify';
+import { useAuthenticator } from '@aws-amplify/ui-react-native';
 
-const Header = () => {
-    const [months, setMonths] = useState([
-        {label:"Aug 2023", value: "08/2023"},
-        {label:"Aug 2024", value: "08/2024"},
-        {label:"Sep 2024", value: "09/2024"},
-        {label:"Oct 2024", value: "10/2024"},
-        {label:"Aug 2023", value: "08/2023"},
-        {label:"Aug 2024", value: "08/2024"},
-        {label:"Sep 2024", value: "09/2024"},
-        {label:"Oct 2024", value: "10/2024"},
-        {label:"Aug 2023", value: "08/2023"},
-        {label:"Aug 2024", value: "08/2024"},
-        {label:"Sep 2024", value: "09/2024"},
-        {label:"Oct 2024", value: "10/2024"},
-        {label:"Aug 2023", value: "08/2023"},
-        {label:"Aug 2024", value: "08/2024"},
-        {label:"Sep 2024", value: "09/2024"},
-        {label:"Oct 2024", value: "10/2024"},
-        {label:"Aug 2023", value: "08/2023"},
-        {label:"Aug 2024", value: "08/2024"},
-        {label:"Sep 2024", value: "09/2024"},
-        {label:"Oct 2024", value: "10/2024"},
-        {label:"Aug 2023", value: "08/2023"},
-        {label:"Aug 2024", value: "08/2024"},
-        {label:"Sep 2024", value: "09/2024"},
-        {label:"Oct 2024", value: "10/2024"},
-        
-    ])
-    const [selectMonth, setSelectMonth] = useState({label:""})
+const getTimes = `
+  query getTimes{
+    getTimes
+  }
+`
+
+const Header = (props:any) => {
+    const [months, setMonths] = useState([])
+    const [selectMonth, setSelectMonth] = useState("")
+
     const [visible, setVisible] = useState(false);
-
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
+
+    useEffect(() => {
+        fetchTimes()
+    }, [props.user])
+
+    async function fetchTimes() {
+        try {
+            console.log(props)
+            const timeData : any = await API.graphql({
+                query: getTimes, 
+                authMode: "AMAZON_COGNITO_USER_POOLS",
+                authToken: props.user.accessToken
+              })
+            setMonths(timeData.data?.getTimes)
+            setSelectMonth(timeData.data?.getTimes.at(-1))
+            console.log(selectMonth)
+        } catch (err) {
+            console.log('fetchTimes failed', err);
+        }
+    }
 
     const handleSetSelectMonth = (i: number) =>{
         setSelectMonth(months[i]);
@@ -51,20 +53,21 @@ const Header = () => {
                     <ScrollView style={styles.scrollView}>
                         {
                             months.map((month,index) =>(
-                                <Menu.Item onPress={() => handleSetSelectMonth(index)} title={month.label} key={index}/>
+                                <Menu.Item onPress={() => handleSetSelectMonth(index)} title={month} key={index}/>
                             ))
                         }
                     </ScrollView>
                 </Modal>
             </Portal>
             <TouchableOpacity onPress={showModal}>
-                <AntDesign name="calendar" size={24} color="black" />
+                {/* <AntDesign name="calendar" size={24} color="black" /> */}
+                {
+                    selectMonth && <Text>
+                                        {selectMonth}
+                                </Text>
+                }   
             </TouchableOpacity>
-            {
-                selectMonth && <Text>
-                                    {selectMonth.label}
-                               </Text>
-            }
+            
         </>
     )
 }

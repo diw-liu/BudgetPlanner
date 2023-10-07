@@ -1,17 +1,24 @@
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { Button, SafeAreaView, StyleSheet } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import Home from './frontend/homeComponent/Home';
+import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 import Navigation from './frontend/Navigation';
+import './configureAmplify'
 
 export default function App() {
-  return (
-    <PaperProvider>
-      <NavigationContainer>
-        <Navigation />
-      </NavigationContainer>
-    </PaperProvider>
 
+  return (
+    <Authenticator.Provider>
+      <Authenticator signUpAttributes={[
+          "email"
+        ]}>
+        <PaperProvider>
+          <NavigationContainer>
+            <Navigation />
+          </NavigationContainer>
+        </PaperProvider>
+      </Authenticator>
+    </Authenticator.Provider>
   );
 }
 
