@@ -4,7 +4,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Setting = () => {
+const Setting = (props: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.pic}>

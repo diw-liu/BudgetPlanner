@@ -1,8 +1,8 @@
-import { Button, SafeAreaView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
-import Navigation from './frontend/Navigation';
+import { Authenticator } from '@aws-amplify/ui-react-native';
+import Navigation from './frontend/navigation';
 import './configureAmplify'
 
 export default function App() {

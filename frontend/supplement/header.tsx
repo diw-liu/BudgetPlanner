@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { AntDesign } from '@expo/vector-icons'; 
+import { StyleSheet, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Modal, Portal, Text, Menu, Divider } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 import { API } from 'aws-amplify';
-import { useAuthenticator } from '@aws-amplify/ui-react-native';
 
 const getTimes = `
   query getTimes{
@@ -45,30 +45,32 @@ const Header = (props:any) => {
     }
 
     return (
-        <>
-            <Portal>
-                <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.contentContainer}>
-                    <Text style={styles.text}>Select Target Month</Text>
-                    <Divider />
-                    <ScrollView style={styles.scrollView}>
-                        {
-                            months.map((month,index) =>(
-                                <Menu.Item onPress={() => handleSetSelectMonth(index)} title={month} key={index}/>
-                            ))
-                        }
-                    </ScrollView>
-                </Modal>
-            </Portal>
-            <TouchableOpacity onPress={showModal}>
-                {/* <AntDesign name="calendar" size={24} color="black" /> */}
-                {
-                    selectMonth && <Text>
-                                        {selectMonth}
-                                </Text>
-                }   
-            </TouchableOpacity>
-            
-        </>
+        <SafeAreaView>
+            <StatusBar style="dark"/>
+            <View style={styles.header}>
+                <Portal>
+                    <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.contentContainer}>
+                        <Text style={styles.text}>Select Target Month</Text>
+                        <Divider />
+                        <ScrollView style={styles.scrollView}>
+                            {
+                                months.map((month,index) =>(
+                                    <Menu.Item onPress={() => handleSetSelectMonth(index)} title={month} key={index}/>
+                                ))
+                            }
+                        </ScrollView>
+                    </Modal>
+                </Portal>
+                <TouchableOpacity onPress={showModal}>
+                    {
+                        selectMonth && <Text>
+                                            {selectMonth}
+                                        </Text>
+                    }   
+                </TouchableOpacity>
+            </View>
+            {props.children}
+        </SafeAreaView>
     )
 }
 
@@ -90,7 +92,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'white', 
         padding: 20, 
         margin: 60,
-    }
-  });
+    },
+    header: {
+        borderBottomWidth: 1,
+        borderBottomColor: "#dbdbdb",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 16,
+        height: 44,
+    },
+});
 
 export default Header;
