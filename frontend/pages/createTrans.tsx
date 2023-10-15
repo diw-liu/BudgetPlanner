@@ -57,7 +57,7 @@ const CreateTrans = (props:any) => {
 
     return(
         <View>
-            <Text>Create new transaction</Text>
+            <Text className=" bg-red">Create new transaction</Text>
             <Controller
                 control={control}
                 rules={{

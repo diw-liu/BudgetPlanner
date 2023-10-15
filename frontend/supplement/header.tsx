@@ -1,46 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Modal, Portal, Text, Menu, Divider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { API } from 'aws-amplify';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const getTimes = `
-  query getTimes{
-    getTimes
-  }
-`
+import MonthContext from './contexts';
 
 const Header = (props:any) => {
-    const [months, setMonths] = useState([])
-    const [selectMonth, setSelectMonth] = useState("")
+
+    const months: string[] = props.months
+    const { month, setMonth } = useContext(MonthContext);
+    // console.log(months);
 
     const [visible, setVisible] = useState(false);
     const showModal = () => setVisible(true);
     const hideModal = () => setVisible(false);
 
-    useEffect(() => {
-        fetchTimes()
-    }, [props.user])
 
-    async function fetchTimes() {
-        try {
-            console.log(props)
-            const timeData : any = await API.graphql({
-                query: getTimes, 
-                authMode: "AMAZON_COGNITO_USER_POOLS",
-                authToken: props.user.accessToken
-              })
-            setMonths(timeData.data?.getTimes)
-            setSelectMonth(timeData.data?.getTimes.at(-1))
-            console.log(selectMonth)
-        } catch (err) {
-            console.log('fetchTimes failed', err);
-        }
-    }
+    // useEffect(() => {
+    //     fetchTimes()
+    // }, [props.user])
+
+   
 
     const handleSetSelectMonth = (i: number) =>{
-        setSelectMonth(months[i]);
+        setMonth(months[i]);
         setVisible(false);
     }
 
@@ -54,7 +39,7 @@ const Header = (props:any) => {
                         <Divider />
                         <ScrollView style={styles.scrollView}>
                             {
-                                months.map((month,index) =>(
+                                months && months.map((month,index) =>(
                                     <Menu.Item onPress={() => handleSetSelectMonth(index)} title={month} key={index}/>
                                 ))
                             }
@@ -63,9 +48,9 @@ const Header = (props:any) => {
                 </Portal>
                 <TouchableOpacity onPress={showModal}>
                     {
-                        selectMonth && <Text>
-                                            {selectMonth}
-                                        </Text>
+                        month && <Text>
+                                    {month}
+                                </Text>
                     }   
                 </TouchableOpacity>
             </View>

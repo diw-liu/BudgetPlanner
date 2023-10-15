@@ -34,7 +34,7 @@ const Transactions = (props: any) => {
 
     return(
         <>
-            <CreateTrans user={props.user}/>
+            {/* <CreateTrans user={props.user}/> */}
             {/* <KeyboardAvoidingView>
                 <Text style={styles.textHeader}>Create new transaction</Text>
                 <ScrollView>
