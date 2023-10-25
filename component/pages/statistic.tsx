@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { Button, StyleSheet, View, Text } from 'react-native';
 import Constants from "expo-constants";
 
 const Statistic = (props: any) => {
@@ -27,7 +27,9 @@ const Statistic = (props: any) => {
           //     {/* <DataDisplay /> */}
           //     {/* <DataTable /> */}
           // </SafeAreaView>   
-          <></>
+          <>
+            <Text className="text-red-600">Hello World</Text>
+          </>
     )
 }
 
