@@ -1,14 +1,9 @@
 import React from 'react';
 import { useForm, Controller } from "react-hook-form"
 import { View, Text, TextInput, Button } from 'react-native';
+import { router } from 'expo-router';
 import { API } from 'aws-amplify';
-
-type Transactions = {
-    title: String
-    catergory: String
-    amount: Number
-    description: String
-}
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const postTransaction = `
     mutation postTransaction($transaction: Transaction!){
@@ -42,13 +37,17 @@ const CreateTrans = (props:any) => {
         }
         try {
             console.log(json)
+            const accessToken = await AsyncStorage.getItem('accessToken') || ""
             const result: any = await API.graphql({
                 query: postTransaction,
                 variables: {transaction: {...json}},
                 authMode: "AMAZON_COGNITO_USER_POOLS",
-                authToken: props.user.accessToken
+                authToken: accessToken
             })
             console.log(result)
+            if(result){
+                router.back();
+            }
         } catch(err) {
             console.log('submit transaction failed', err);
         }
@@ -57,7 +56,6 @@ const CreateTrans = (props:any) => {
 
     return(
         <View>
-            <Text className=" bg-red">Create new transaction</Text>
             <Controller
                 control={control}
                 rules={{
@@ -122,7 +120,6 @@ const CreateTrans = (props:any) => {
                     />
                 )}
             />
-
             <Button title='Submit' onPress={handleSubmit(onSubmit)}/>
         </View>
     )

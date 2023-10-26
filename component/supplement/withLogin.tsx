@@ -19,20 +19,20 @@ export default function WithLogin(props: any) {
     try {
       const accessToken = await AsyncStorage.getItem('accessToken')
       const userExpire = await AsyncStorage.getItem('userExpire')
-      if (accessToken && userExpire && new Date().getTime() <= new Date(userExpire).getTime()) {
+      // if (accessToken && userExpire && new Date().getTime() <= new Date(userExpire).getTime()) {
         Auth.currentSession()
           .then(async (session) => {
             const idToken = session.getIdToken();
             const accessToken = session.getAccessToken();
             await AsyncStorage.multiSet([['email', idToken.payload['email']],
-            ['username', idToken.payload['cognito:username']],
-            ['userId', idToken.payload['sub']],
-            ['accessToken', accessToken.getJwtToken()],
-            ['userExpire', JSON.stringify(getNextDay())]]);
+                                          ['username', idToken.payload['cognito:username']],
+                                          ['userId', idToken.payload['sub']],
+                                          ['accessToken', accessToken.getJwtToken()],
+                                          ['userExpire', JSON.stringify(getNextDay())]]);
 
             console.log("user end");
           })
-      }
+      //}
     } catch (err) {
       console.log("Login error " + err)
     }

@@ -44,7 +44,7 @@ const Header = (props:any) => {
             console.log('FetchTimes error', err);
         }
     }
-    console.log(props)
+
     return (
         <>
             <TouchableOpacity>

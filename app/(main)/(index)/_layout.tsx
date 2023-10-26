@@ -7,36 +7,34 @@ export default function RootLayout() {
   return (
     <>
       <Head>
-        
+
       </Head>
-      {/* <WithLogin> */}
-        <Tabs
-          screenOptions={{
-            headerShown: false,
-            tabBarShowLabel: false,
-            tabBarActiveTintColor: "rgb(29, 155, 240)",
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarActiveTintColor: "rgb(29, 155, 240)",
+        }}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Home",
+            tabBarIcon: () => (
+              <Ionicons name="stats-chart" size={20} color="black" />
+            ),
           }}
-        >
-          <Tabs.Screen
-            name="index"
-            options={{
-              title: "Home",
-              tabBarIcon: () => (
-                <Ionicons name="stats-chart" size={20} color="black" />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="table"
-            options={{
-              title: "Table",
-              tabBarIcon: () => (
-                <AntDesign name="table" size={24} color="black" />
-              ),
-            }}
-          />
-        </Tabs>
-      {/* </WithLogin> */}
+        />
+        <Tabs.Screen
+          name="table"
+          options={{
+            title: "Table",
+            tabBarIcon: () => (
+              <AntDesign name="table" size={24} color="black" />
+            ),
+          }}
+        />
+      </Tabs>
     </>
   );
 }

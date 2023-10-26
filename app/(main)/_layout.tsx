@@ -1,13 +1,9 @@
 import { Stack } from "expo-router";
-import MonthContext from '../../component/supplement/contexts';
-import Header from "../../component/supplement/header";
-import { useState } from 'react';
 
 export default function DynamicLayout() {
-  const [month, setMonth] = useState("")
 
   return (
-    <MonthContext.Provider value={{ month, setMonth }}>
+    <>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -19,14 +15,20 @@ export default function DynamicLayout() {
         <Stack.Screen
           name="modal"
           options={{
-            // Set the presentation mode to modal for our modal route.st
-            //headerRight: ,
+            headerShown: true,
             title: "Select target month",
-            presentation: 'modal',
-            headerRight: () => null
+            presentation: 'modal'
+          }}
+        />
+        <Stack.Screen
+          name="create"
+          options={{
+            headerShown: true,
+            title: "Create new transaction",
+            presentation: 'modal'
           }}
         />
       </Stack>
-    </MonthContext.Provider>
+    </>
   );
 }
