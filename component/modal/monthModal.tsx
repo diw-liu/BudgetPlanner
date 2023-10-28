@@ -1,11 +1,10 @@
 import { FlatList, Text, View, Pressable } from 'react-native';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MonthContext from '../../component/supplement/contexts';
+import MonthContext from '../supplement/contexts';
 import { useContext, useEffect, useState } from 'react';
-import Head from 'expo-router/head';
 
-export default function Modal() {
+export default function MonthsModal() {
   const [months, setMonths] = useState([])
   const { setMonth } = useContext(MonthContext);
 
@@ -48,16 +47,12 @@ export default function Modal() {
 
   return (
     <>
-      <Head>
-        <title>Home</title>
-      </Head>
-      {months && <FlatList
-        scrollToOverflowEnabled
-        style={{ flex: 1 }}
-        data={months}
-        renderItem={renderItem}
-      />}
+       { months && <FlatList
+                    scrollToOverflowEnabled
+                    style={{ flex: 1 }}
+                    data={months}
+                    renderItem={renderItem}
+                  />}
     </>
-  );
+  )
 }
-

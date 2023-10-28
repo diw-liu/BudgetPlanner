@@ -1,26 +1,21 @@
 import { useState } from 'react';
 import { Drawer } from 'expo-router/drawer';
-import Header from '../component/supplement/header';
+import Header from '../component/supplement/selectMonth';
 import MonthContext from '../component/supplement/contexts';
 import WithLogin from '../component/supplement/withLogin';
 
-export default function Layout() {
+export default function DrawerLayout() {
   const [month, setMonth] = useState("")
   return (
     <MonthContext.Provider value={{ month, setMonth }}>
       <WithLogin>
         <Drawer
           screenOptions={{
-            drawerActiveTintColor: "rgb(29, 155, 240)",
-            headerRight: (props) => <Header {...props} />
+            headerShown:false
           }}
         >
           <Drawer.Screen
-            name="(main)"
-            options={{
-              drawerLabel: "Home",
-              title: "Home"
-            }}
+            name="(tabs)"
           />
         </Drawer>
       </WithLogin>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, TextInput, View, ScrollView, Keyboard, KeyboardAvoidingView, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import Header from '../supplement/header';
-import CreateTrans from './createTrans';
+import Header from '../supplement/selectMonth';
+import CreateTrans from '../modal/createModal';
 
 const Transactions = (props: any) => {
     const [transaction, setTransaction] = useState({
