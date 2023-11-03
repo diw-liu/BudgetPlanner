@@ -1,130 +1,132 @@
-import { useEffect, useRef, useState } from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
-import { DataTable } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import useScrollToTop from '../supplement/useScrollToTopWithOffset';
-import { Platform } from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import { Pressable, View, Text, SafeAreaView, SectionList } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API } from 'aws-amplify';
+import MonthContext from '../supplement/contexts';
+import { ITransaction } from '../type/itransaction';
+import ViewTransSearch from '../header/viewTransSearch';
 
-const ViewTrans = () => {
-  const ref = useRef<ScrollView>(null);
-  useScrollToTop(
-    ref,
-    Platform.select({
-      ios: -150,
-      default: 0,
-    })
-  );
-  const [page, setPage] = useState<number>(0);
-  // const [numberOfItemsPerPageList] = useState([2, 3, 4]);
-  const [itemsPerPage, onItemsPerPageChange] = useState(9);
+const getTransaction = `
+  query getTransaction($bookId: String!){
+    getTransaction(bookId: $bookId){
+      Time
+      CatergoryId
+      Title
+      Amount
+      Description
+    }
+  }
+`
 
-  const [items] = useState([
-   {
-     key: 1,
-     name: 'Cupcake',
-     calories: 356,
-     fat: 16,
-   },
-   {
-     key: 2,
-     name: 'Eclair',
-     calories: 262,
-     fat: 16,
-   },
-   {
-     key: 3,
-     name: 'Frozen yogurt',
-     calories: 159,
-     fat: 6,
-   },
-   {
-     key: 4,
-     name: 'Gingerbread',
-     calories: 305,
-     fat: 3.7,
-   },
-   {
-    key: 1,
-    name: 'Cupcake',
-    calories: 356,
-    fat: 16,
-  },
-  {
-    key: 2,
-    name: 'Eclair',
-    calories: 262,
-    fat: 16,
-  },
-  {
-    key: 3,
-    name: 'Frozen yogurt',
-    calories: 159,
-    fat: 6,
-  },
-  {
-    key: 4,
-    name: 'Gingerbread',
-    calories: 305,
-    fat: 3.7,
-  },{
-    key: 1,
-    name: 'Cupcake',
-    calories: 356,
-    fat: 16,
-  },
-  {
-    key: 2,
-    name: 'Eclair',
-    calories: 262,
-    fat: 16,
-  },
-  {
-    key: 3,
-    name: 'Frozen yogurt',
-    calories: 159,
-    fat: 6,
-  },
-  ]);
-
-  const from = page * itemsPerPage;
-  const to = Math.min((page + 1) * itemsPerPage, items.length);
+export default function ViewTrans() {
+  const { month } = useContext(MonthContext);
+  const [sectData, setSectData] = useState([])
+  const [transactions, setTransactions] = useState<ITransaction[]>([]);
 
   useEffect(() => {
-    setPage(0);
-  }, [itemsPerPage]);
+    fetchTransaction();
+  }, []);
 
+  const convertSectionDate = (data: ITransaction[], filter: string) => {
+    if(filter != ""){
+      data = transactions.filter((element) => element.CatergoryId.includes(filter) || element.Title.includes(filter) || element.Description.includes(filter))
+    }
+    if(data.length == 0 && filter == "") data = transactions
+    let mapping = new Map<string, ITransaction[]>();
+    data.forEach(x => {
+      const date = x['Time'].split("T")[0];
+      if(mapping.has(date)){
+        mapping.set(date, [...mapping.get(date) as ITransaction[], x]);
+      }else {
+        mapping.set(date, [x]);
+      }
+    })
+    let result: any = []
+    mapping.forEach( (value, key) => {
+      result.push({
+        "title": key,
+        "data": value
+      })
+    })
+    setSectData(result)
+  }
+
+  const fetchTransaction = async () => {
+    try {
+      const cache = await AsyncStorage.getItem("transactions")
+      if(!cache){
+        console.log(month)
+        console.log("okay 21")
+        const accessToken = await AsyncStorage.getItem('accessToken') || '';
+        const payload : any = await API.graphql({
+          query: getTransaction,
+          variables: { bookId: month},
+          authMode: "AMAZON_COGNITO_USER_POOLS",
+          authToken: accessToken
+        })
+        if(payload){
+          await AsyncStorage.setItem('transactions', JSON.stringify(payload.data?.getTransaction));
+          setTransactions(payload.data?.getTransaction)
+          console.log("after fetchTimes")
+          convertSectionDate(payload.data?.getTransaction, "")
+        }
+      }else {
+        console.log("cache" + cache)
+        const value = JSON.parse(cache);
+        setTransactions(value);
+        convertSectionDate(value, "")
+      }
+      
+    } catch (error) {
+      console.log('FetchTransaction error', error);
+    }
+  }
+
+  const Box = ( { ...props }) => (
+    <Text className="flex text-center justify-center items-center rounded basis-1/3" {...props}/>
+  )
+  
+  const renderItem = ({ item }: { item: any }) => {
+    return (
+      <Pressable>
+        {({ pressed }) => (
+          <View
+            style={[
+              {
+                flexDirection: "row",
+                padding: 16,
+                gap: 16,
+                borderBottomColor: "#ccc",
+                borderBottomWidth: 1,
+              },
+              pressed && {
+                backgroundColor: "#ccc",
+              },
+            ]}>
+            <Box>{item["Title"]}</Box>
+            <Box>{item["CatergoryId"]}</Box>
+            <Box>{item["Amount"]}</Box>
+          </View>
+        )}
+      </Pressable>
+    );
+  };
+  
   return (
-      <ScrollView 
-      ref={ref}>
-      <DataTable>
-      <DataTable.Header>
-        <DataTable.Title sortDirection='ascending'>Dessert</DataTable.Title>
-        <DataTable.Title numeric>Calories</DataTable.Title>
-        <DataTable.Title numeric>Fat</DataTable.Title>
-      </DataTable.Header>
-
-      {items.slice(from, to).map((item) => (
-        <DataTable.Row key={item.key}>
-          <DataTable.Cell>{item.name}</DataTable.Cell>
-          <DataTable.Cell numeric>{item.calories}</DataTable.Cell>
-          <DataTable.Cell numeric>{item.fat}</DataTable.Cell>
-        </DataTable.Row>
-      ))}
-
-      <DataTable.Pagination
-        page={page}
-        numberOfPages={Math.ceil(items.length / itemsPerPage)}
-        onPageChange={(page) => setPage(page)}
-        label={`${from + 1}-${to} of ${items.length}`}
-        // numberOfItemsPerPageList={numberOfItemsPerPageList}
-        numberOfItemsPerPage={itemsPerPage}
-        onItemsPerPageChange={onItemsPerPageChange}
-        showFastPaginationControls
-        selectPageDropdownLabel={'Rows per page'}
-      />
-    </DataTable>
-      </ScrollView>
-  );
+    <>
+      <SafeAreaView>
+        <ViewTransSearch convertSectionDate={convertSectionDate}/>
+      </SafeAreaView>
+      { transactions && <SectionList
+                    contentInsetAdjustmentBehavior="automatic"
+                    scrollToOverflowEnabled
+                    style={{ flex: 1 }}
+                    sections={sectData}
+                    renderItem={renderItem}
+                    renderSectionHeader={({section: {title}}) => (
+                      <Text>{title}</Text>
+                    )}
+                    />}
+    </>
+  )
 };
-
-export default ViewTrans

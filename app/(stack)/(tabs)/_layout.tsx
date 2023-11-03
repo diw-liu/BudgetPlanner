@@ -1,22 +1,23 @@
-import Head from "expo-router/head";
 import { Tabs } from "expo-router";
-import { Text } from "react-native-paper";
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-// import WithLogin from "../../component/supplement/withLogin";
+import { DrawerToggleButton } from "@react-navigation/drawer";
+import SelectMonth from "../../../component/header/selectMonth";
 
 export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         tabBarShowLabel: false,
         tabBarActiveTintColor: "rgb(29, 155, 240)",
+        headerLeft: () => <DrawerToggleButton />,
+        headerRight: () => <SelectMonth />
       }}
     >
       <Tabs.Screen
         name="(index)"
         options={{
-          title: "index",
+          title: "Statistic",
           tabBarIcon: () => (
             <Ionicons name="stats-chart" size={20} color="black" />
           ),

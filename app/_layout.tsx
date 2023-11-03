@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Drawer } from 'expo-router/drawer';
-import Header from '../component/supplement/selectMonth';
 import MonthContext from '../component/supplement/contexts';
 import WithLogin from '../component/supplement/withLogin';
 
@@ -15,7 +14,7 @@ export default function DrawerLayout() {
           }}
         >
           <Drawer.Screen
-            name="(tabs)"
+            name="(stack)"
           />
         </Drawer>
       </WithLogin>

@@ -7,9 +7,9 @@ import { API } from 'aws-amplify';
 import MonthContext from '../supplement/contexts';
 
 const postTransaction = `
-    mutation postTransaction($transaction: Transaction!){
-        postTransaction(transaction: $transaction)
-    }
+  mutation postTransaction($transaction: TransactionInput!){
+    postTransaction(transaction: $transaction)
+  }
 `
 
 export default function CreateModal() {
@@ -28,10 +28,10 @@ export default function CreateModal() {
   const { month } = useContext(MonthContext);
 
   const onSubmit = async (data: any) => {
+    console.log(new Date().toISOString())
     const json = {
-      // AccountId: props.user.
       BookId: month,
-      Time: new Date().toISOString().split('T')[0],
+      Time: new Date().toISOString(),
       CatergoryId: data?.catergory,
       Title: data?.title,
       Amount: data?.amount,
@@ -48,7 +48,7 @@ export default function CreateModal() {
       })
       console.log(result)
       if (result) {
-        router.back();
+        router.back()
       }
     } catch (err) {
       console.log('submit transaction failed', err);

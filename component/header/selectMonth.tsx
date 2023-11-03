@@ -3,11 +3,13 @@ import { TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API } from 'aws-amplify';
 import { Link } from 'expo-router';
-import MonthContext from './contexts';
+import MonthContext from '../supplement/contexts';
 
 const getTimes = `
   query getTimes{
-    getTimes
+    getTimes{
+      Time
+    }
   }
 `
 
@@ -20,25 +22,27 @@ const SelectMonth = () => {
 
   const fetchTimes = async () => {
     try {
-      const value = await AsyncStorage.getItem('months')
-      if (!value) {
+      const cache = await AsyncStorage.getItem('months')
+      if (!cache) {
         console.log("begin fetchTimes")
         const accessToken = await AsyncStorage.getItem('accessToken') || ""
-        const timeData: any = await API.graphql({
+        const payload : any = await API.graphql({
           query: getTimes,
           authMode: "AMAZON_COGNITO_USER_POOLS",
           authToken: accessToken
         })
-        console.log("time data" + timeData.data?.getTimes);
-        await AsyncStorage.setItem('months', JSON.stringify(timeData.data?.getTimes));
-        setMonth(timeData.data?.getTimes.at(-1))
-        console.log("after fetchTimes")
+        if(payload){
+          await AsyncStorage.setItem('months', JSON.stringify(payload.data?.getTimes));
+          setMonth(payload.data?.getTimes.at(-1)['Time'])
+          console.log("after fetchTimes")
+        }
       }
       else {
         console.log("getting cache");
-        const valueArr = JSON.parse(value);
-        console.log("getting cache" + valueArr);
-        setMonth(valueArr.at(-1))
+        const value = JSON.parse(cache);
+        
+        console.log("getting cache" + value?.at(-1)['Time']);
+        setMonth(value?.at(-1)['Time'])
       }
     } catch (err) {
       console.log('FetchTimes error', err);

@@ -5,7 +5,7 @@ import MonthContext from '../supplement/contexts';
 import { useContext, useEffect, useState } from 'react';
 
 export default function MonthsModal() {
-  const [months, setMonths] = useState([])
+  const [months, setMonths] = useState([{}])
   const { setMonth } = useContext(MonthContext);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function MonthsModal() {
 
   const renderItem = ({ item }: { item: any }) => {
     return (
-      <Pressable onPress={() => handleClick(item)}>
+      <Pressable onPress={() => handleClick(item["Time"])}>
         {({ pressed }) => (
           <View
             style={[
@@ -38,7 +38,7 @@ export default function MonthsModal() {
                 backgroundColor: "#ccc",
               },
             ]}>
-            <Text>{item}</Text>
+            <Text>{item["Time"]}</Text>
           </View>
         )}
       </Pressable>
