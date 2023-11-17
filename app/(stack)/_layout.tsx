@@ -11,7 +11,7 @@ export default function StackLayout(){
         name="(tabs)"
       />
       <Stack.Screen
-        name="months"
+        name="books"
         options={{
           headerShown: true,
           title: "Select target month",

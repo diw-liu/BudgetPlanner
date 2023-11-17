@@ -4,7 +4,6 @@ import { View, Text, TextInput, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { API } from 'aws-amplify';
-import MonthContext from '../supplement/contexts';
 
 const postTransaction = `
   mutation postTransaction($transaction: TransactionInput!){
@@ -13,47 +12,47 @@ const postTransaction = `
 `
 
 export default function CreateModal() {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    defaultValues: {
-      title: "",
-      catergory: "",
-      amount: "",
-      description: ""
-    },
-  })
-  const { month } = useContext(MonthContext);
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   formState: { errors }
+  // } = useForm({
+  //   defaultValues: {
+  //     title: "",
+  //     catergory: "",
+  //     amount: "",
+  //     description: ""
+  //   },
+  // })
+  // const { month } = useContext(MonthContext);
 
-  const onSubmit = async (data: any) => {
-    console.log(new Date().toISOString())
-    const json = {
-      BookId: month,
-      Time: new Date().toISOString(),
-      CatergoryId: data?.catergory,
-      Title: data?.title,
-      Amount: data?.amount,
-      Description: data?.description,
-    }
-    try {
-      console.log(json)
-      const accessToken = await AsyncStorage.getItem('accessToken') || ""
-      const result: any = await API.graphql({
-        query: postTransaction,
-        variables: { transaction: { ...json } },
-        authMode: "AMAZON_COGNITO_USER_POOLS",
-        authToken: accessToken
-      })
-      console.log(result)
-      if (result) {
-        router.back()
-      }
-    } catch (err) {
-      console.log('submit transaction failed', err);
-    }
-  }
+  // const onSubmit = async (data: any) => {
+  //   console.log(new Date().toISOString())
+  //   const json = {
+  //     BookId: month,
+  //     Time: new Date().toISOString(),
+  //     CatergoryId: data?.catergory,
+  //     Title: data?.title,
+  //     Amount: data?.amount,
+  //     Description: data?.description,
+  //   }
+  //   try {
+  //     console.log(json)
+  //     const accessToken = await AsyncStorage.getItem('accessToken') || ""
+  //     const result: any = await API.graphql({
+  //       query: postTransaction,
+  //       variables: { transaction: { ...json } },
+  //       authMode: "AMAZON_COGNITO_USER_POOLS",
+  //       authToken: accessToken
+  //     })
+  //     console.log(result)
+  //     if (result) {
+  //       router.back()
+  //     }
+  //   } catch (err) {
+  //     console.log('submit transaction failed', err);
+  //   }
+  // }
 
   return (
     <View>

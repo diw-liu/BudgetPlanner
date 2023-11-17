@@ -1,14 +1,19 @@
-import { createContext } from "react"
-type MonthContextType = {
-    month: string ,
-    setMonth: (newValue: string) => void
+import { Dispatch, SetStateAction, createContext } from "react"
+
+export type Book = {
+  BookId: String;
+  CreatedTime: String;
+  Title: String;
 }
 
-const iMonthContextState = {
-   month: "",
-   setMonth: () => {}
+type BookContextType = {
+    book: Partial<Book>,
+    setBook: Dispatch<SetStateAction<Book>>;
 }
 
-const MonthContext = createContext<MonthContextType>(iMonthContextState)
+const iBookContextState = {
+   book: {},
+   setBook: () => {}
+}
 
-export default MonthContext
+export const BookContext = createContext<BookContextType>(iBookContextState)

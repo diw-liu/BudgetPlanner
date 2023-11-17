@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { DrawerToggleButton } from "@react-navigation/drawer";
-import SelectMonth from "../../../component/header/selectMonth";
+import SelectBook from "../../../component/header/selectBook";
 
 export default function TabsLayout() {
   return (
@@ -11,7 +11,7 @@ export default function TabsLayout() {
         tabBarShowLabel: false,
         tabBarActiveTintColor: "rgb(29, 155, 240)",
         headerLeft: () => <DrawerToggleButton />,
-        headerRight: () => <SelectMonth />
+        headerRight: () => <SelectBook />
       }}
     >
       <Tabs.Screen

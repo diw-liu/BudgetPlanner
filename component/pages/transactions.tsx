@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, TextInput, View, ScrollView, Keyboard, KeyboardAvoidingView, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import Header from '../header/selectMonth';
+import Header from '../header/selectBook';
 import CreateTrans from '../modal/createModal';
 
 const Transactions = (props: any) => {

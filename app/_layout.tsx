@@ -1,23 +1,36 @@
-import { useState } from 'react';
 import { Drawer } from 'expo-router/drawer';
-import MonthContext from '../component/supplement/contexts';
-import WithLogin from '../component/supplement/withLogin';
+import { Authenticator } from '@aws-amplify/ui-react-native';
+import Configuration from '../component/supplement/configuration';
 
-export default function DrawerLayout() {
-  const [month, setMonth] = useState("")
+const DrawerLayout = () => {
   return (
-    <MonthContext.Provider value={{ month, setMonth }}>
-      <WithLogin>
-        <Drawer
-          screenOptions={{
-            headerShown:false
+    <Configuration>
+      <Drawer
+        screenOptions={{
+          headerShown:false
+        }}
+      >
+        <Drawer.Screen
+          name="(stack)"
+          options={{
+            title: "Home"
           }}
-        >
-          <Drawer.Screen
-            name="(stack)"
-          />
-        </Drawer>
-      </WithLogin>
-    </MonthContext.Provider>
+        />
+        <Drawer.Screen
+          name="(chat)"
+          options={{
+            title: "Chat"
+          }}
+        />
+      </Drawer>
+    </Configuration>
+  )
+}
+
+export default function DrawerLayoutWithAuth(){
+  return(
+    <Authenticator.Provider>
+      <DrawerLayout />
+    </Authenticator.Provider>
   )
 }
