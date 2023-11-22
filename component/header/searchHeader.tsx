@@ -1,16 +1,26 @@
 import { Link } from "expo-router";
 import { useState } from "react";
-import { Button, Pressable, View, Text } from "react-native";
+import { Button, Pressable, View, Text, TouchableHighlight } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { AntDesign } from '@expo/vector-icons';
 
-export default function ViewTransSearch(props: any) {
+export default function SearchHeader(props: any) {
   const [text, onChangeText] = useState("")
 
   const handleConfirm = () => {
-    props.convertSectionDate([], text);
+    props.handleOnConfirm(text);
   }
   
+  const renderSideButton = () => (
+      props.caller=="chats" ? <TouchableHighlight>
+                                <AntDesign name="plussquareo" size={24} style={{ "color": "rgba(0,122,255,255)" }}/>
+                              </TouchableHighlight>
+                            : <Link href="/create" > 
+                                <AntDesign name="plussquareo" size={24} style={{ "color": "rgba(0,122,255,255)" }}/>
+                              </Link>
+  )
+      
+
   return(
     <View>
       <Pressable >
@@ -23,21 +33,13 @@ export default function ViewTransSearch(props: any) {
                   value={text}
                 />
             </View>
-
             <View className="basis-1/4 flex flex-row justify-center">
               { text != "" ? <Button title="Confirm" onPress={handleConfirm}/>
-                            : <Link href="/create" > 
-                                <AntDesign name="plussquareo" size={24} style={{ "color": "rgba(0,122,255,255)" }}/>
-                              </Link>}
+                           : renderSideButton()}
             </View>  
           </View>
         )}
       </Pressable>
-      {/* <View className="flex flex-row items-center space-x-2">
-        <Box>Title</Box>
-        <Box>Catergory</Box>
-        <Box>Amount</Box>
-      </View>     */}
     </View>
   )
 }

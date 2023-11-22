@@ -4,13 +4,14 @@ import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react-native';
 import { Auth } from '@aws-amplify/auth';
 import { API } from "aws-amplify";
 import '../../configureAmplify'
-import { Book, BookContext } from "./contexts";
+import { Book, BookContext, Transaction, TransactionsContext} from "./contexts";
 
 const getUser = `
   query getUser{
     getUser{
       Name
       Books{
+        UserId
         BookId
         CreatedTime
         Title
@@ -19,17 +20,18 @@ const getUser = `
   }
 `
 
-const getTransaction = `
-  query getTransaction($bookId: String!){
-    getTransaction(bookId: $bookId){
+const getTransactions = `
+  query getTransactions($input: String!){
+    getTransactions(input: $input){
       TransactionId
-      CatergoryId
+      UserId
       Title
       Amount
       Catergory
       Description
       CreatedTime
       UpdatedTime
+      IsApproved
     }
   }
 `
@@ -41,12 +43,17 @@ const getNextDay = () => {
 }
 
 export default function Configuration(props: any) {
-  const [book, setBook] = useState({})
+  const [book, setBook] = useState<Book>({})
+  const [trans, setTrans] = useState<Transaction[]>([]);
   const { route } = useAuthenticator(context => [context.route]);
 
   useEffect(() => {
-    initialization();
+    fetchUserAll();
   }, [route])
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [book])
 
   const createdMonths = (books: Book[]) => {
     return books.reduce((map, book) => {
@@ -57,46 +64,67 @@ export default function Configuration(props: any) {
     }, {} as {[key:string]:Book[]})
   }
 
-  const initialization = async () => {
+  const fetchTransactions = async () => {
+    try {
+      const accessToken = await AsyncStorage.getItem('accessToken') || ""
+      console.log(accessToken)
+      console.log("bookId" + book["BookId"])
+      const payload: any = await API.graphql({
+        query: getTransactions,
+        variables: { input: book["BookId"] },
+        authMode: "AMAZON_COGNITO_USER_POOLS",
+        authToken: accessToken
+      })
+      console.log(payload)
+      if (payload) {
+        const trans = payload["data"]["getTransactions"]
+        setTrans(trans)
+        console.log(trans)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    
+  }
+
+  // make this part better
+  const fetchUserAll = async () => {
     if (route !== 'authenticated') return;
     //await AsyncStorage.clear();
     try {
-      var accessToken = await AsyncStorage.getItem('accessToken')
-      const userExpire = await AsyncStorage.getItem('userExpire')
-      //accessToken && userExpire && new Date().getTime() >= new Date(userExpire).getTime()
-      if (true) {
+      // const expiration = new Date(await AsyncStorage.getItem('userExpire') || "")
+      // const today = new Date()
+      // if( today.getTime() >= expiration.getTime()){
+      //   console.log('dad sadass')
+      // }
+      // if (today.getTime() >= expiration.getTime()){
         Auth.currentSession()
           .then(async (session) => {
-            accessToken = session.getAccessToken().getJwtToken();
-            await AsyncStorage.multiSet([['accessToken', accessToken],
-            ['userExpire', JSON.stringify(getNextDay())]])
+            const idToken = session.getIdToken();
+            const accessToken = session.getAccessToken().getJwtToken();
+            await AsyncStorage.multiSet([['userId', idToken.payload['sub']],
+                                         ['accessToken', accessToken],
+                                         ['userExpire', JSON.stringify(getNextDay())]])
+                              .then(async () => {
+                                const payload: any = await API.graphql({
+                                  query: getUser,
+                                  authMode: "AMAZON_COGNITO_USER_POOLS",
+                                  authToken: accessToken
+                                })
+                                console.log(accessToken+"outside")
+                                if (payload) {
+                                  console.log(payload)
+                                  const books = payload["data"]["getUser"]["Books"]
+                                  await AsyncStorage.setItem("months", JSON.stringify(createdMonths(books)));
+                                  setBook(books[0])
+                                }
+                              })
           })
-
-        const payload: any = await API.graphql({
-          query: getUser,
-          authMode: "AMAZON_COGNITO_USER_POOLS",
-          authToken: accessToken || ""
-        })
-
-        if (payload) {
-          const books = payload["data"]["getUser"]["Books"]
-          console.log(books)
-          console.log(JSON.stringify(books));
-          setBook(books[books.length - 1])
-          await AsyncStorage.setItem("months", JSON.stringify(createdMonths(books)));
-
-          // const transResult: any = await API.graphql({
-          //   query: getTransactions,
-          //   authMode: "AMAZON_COGNITO_USER_POOLS",
-          //   authToken: accessToken
-          // })
-        }
-      } else {
-        console.log(await AsyncStorage.getItem('books'))
-        const books = await AsyncStorage.getItem('books').then((data) => JSON.parse(data || ''))
-        console.log(books)
-        if (books) setBook(books[-1])
-      }
+      // } else {
+      //   const month = today.toISOString().split('T')[0].slice(0, 7)
+      //   const book = JSON.parse(await AsyncStorage.getItem("months") || "")[month].pop()
+      //   setBook(book)
+      // }
     } catch (err) {
       console.log("Login error " + err)
     }
@@ -108,7 +136,9 @@ export default function Configuration(props: any) {
       "name"
     ]}>
       <BookContext.Provider value={{ book, setBook }}>
-        {props.children}
+        <TransactionsContext.Provider value={{trans, setTrans}}>
+          {props.children}
+        </TransactionsContext.Provider>
       </BookContext.Provider>
     </Authenticator>
 

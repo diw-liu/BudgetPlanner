@@ -27,6 +27,7 @@ export default function BooksModal() {
   const handleBookClick = (book: Book) => {
     setBook(book)
     router.back()
+    // fetching transaction here
   }
 
   const renderMonths = ({item}: {item: string}) => {

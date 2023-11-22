@@ -19,6 +19,37 @@ const DataDisplay = () => {
   const [selectData, setSelectData] = useState({value: 47, text: "Food",});
   var tempo = "";
 
+  const fetchTransaction = async () => {
+    // try {
+    //   const cache = await AsyncStorage.getItem("transactions")
+    //   if(!cache){
+    //     console.log(month)
+    //     console.log("okay 21")
+    //     const accessToken = await AsyncStorage.getItem('accessToken') || '';
+    //     const payload : any = await API.graphql({
+    //       query: getTransaction,
+    //       variables: { bookId: month},
+    //       authMode: "AMAZON_COGNITO_USER_POOLS",
+    //       authToken: accessToken
+    //     })
+    //     if(payload){
+    //       await AsyncStorage.setItem('transactions', JSON.stringify(payload.data?.getTransaction));
+    //       setTransactions(payload.data?.getTransaction)
+    //       console.log("after fetchTimes")
+    //       convertSectionDate(payload.data?.getTransaction, "")
+    //     }
+    //   }else {
+    //     console.log("cache" + cache)
+    //     const value = JSON.parse(cache);
+    //     setTransactions(value);
+    //     convertSectionDate(value, "")
+    //   }
+      
+    // } catch (error) {
+    //   console.log('FetchTransaction error', error);
+    // }
+  }
+  
   return (
     // <View>
     //   <PieChart
